@@ -9,10 +9,16 @@ import (
 )
 
 func main() {
-    data := parseCsv("input_files/test.csv")
-    fmt.Printf("%v\n\n%d", data, data[0][1] + data[0][2])
+    // inputData := parseCsv("./input_files/testmatrix.csv")
+    // fmt.Printf("%v\n\n%d", data, data[0][1] + data[0][2])
+    inputPath := "./input_files/testmatrix.csv"
 
-    // TODO: Potenzmatrix
+    adjacencyMatrix := parseCsv(inputPath)
+    potencyMatrix := calcPotency(adjacencyMatrix)
+    secondPot := calcPotency(potencyMatrix)
+
+    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v",
+                adjacencyMatrix, potencyMatrix, secondPot)
 
     // TODO: Distanzmatrix
 
@@ -49,4 +55,21 @@ func parseCsv(filePath string) [][]int {
         data = append(data, row)
     }
     return data
+}
+
+func calcPotency(data [][]int) [][]int {
+    potencyMatrix := make([][]int, len(data))
+    for i := range potencyMatrix {
+        potencyMatrix[i] = make([]int, len(data))
+    }
+    for i := 0; i<len(data); i++  {
+        for j := 0; j<len(data); j++ {
+            cellSum := 0
+            for k := 0; k<len(data); k++ {
+                cellSum += (data[i][k] * data[k][j])
+            }
+            potencyMatrix[i][j] = cellSum
+        }
+    }
+    return potencyMatrix
 }
