@@ -13,8 +13,7 @@ To run the program
 
 # The graph program
 
-![[media/Anforderungen.jpg]]
-
+![](media/Anforderungen.jpg)
 ## Reading the file and parsing the csv
 Reading the file is easy
 Converting the csv to a 2d slice was easy as well
