@@ -1,26 +1,40 @@
 package main
 
 import (
-	"encoding/csv"
-	"fmt"
-	"log"
-	"os"
-	"strconv"
+    "encoding/csv"
+    "fmt"
+    "log"
+    "os"
+    "strconv"
 )
 
 func main() {
-    // inputData := parseCsv("./input_files/testmatrix.csv")
-    // fmt.Printf("%v\n\n%d", data, data[0][1] + data[0][2])
-    inputPath := "./input_files/testmatrix.csv"
+    //inputPath := "./input_files/testmatrix.csv"
+    inputPath := "./input_files/matrix8.csv"
 
     adjacencyMatrix := parseCsv(inputPath)
     potencyMatrix := calcPotency(adjacencyMatrix)
     secondPot := calcPotency(potencyMatrix)
 
     fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v",
-                adjacencyMatrix, potencyMatrix, secondPot)
+    adjacencyMatrix, potencyMatrix, secondPot)
 
+    // TODO: Maybe make function to multiply two matrices separately 
     // TODO: Distanzmatrix
+    var distanceMatrix [][]int
+    for i := 0; i < len(adjacencyMatrix); i++ {
+        for j := 0; j < len(adjacencyMatrix); j++ {
+            if i == j {
+                distanceMatrix[i][j] = 0
+            } else if adjacencyMatrix[i][j] == 0 {
+                distanceMatrix[i][j] = -1
+            } else if adjacencyMatrix[i][j] == 1 {
+                distanceMatrix[i][j] = 1
+            } else {
+                
+            }
+        }
+    }
 
     // TODO: Wegematrix
 
@@ -40,7 +54,7 @@ func parseCsv(filePath string) [][]int {
     // Read the csv from the file
     csvReader := csv.NewReader(file)
     rawData, _ := csvReader.ReadAll()
-    
+
     // Parse the slice to an integer slice
     var data [][]int
     for _, record := range rawData {
@@ -58,10 +72,13 @@ func parseCsv(filePath string) [][]int {
 }
 
 func calcPotency(data [][]int) [][]int {
+    // Create matrix to write calculated data into
     potencyMatrix := make([][]int, len(data))
     for i := range potencyMatrix {
         potencyMatrix[i] = make([]int, len(data))
     }
+
+    // Calculate potency matrix
     for i := 0; i<len(data); i++  {
         for j := 0; j<len(data); j++ {
             cellSum := 0
