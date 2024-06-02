@@ -1,40 +1,25 @@
 package main
 
 import (
-    "encoding/csv"
-    "fmt"
-    "log"
-    "os"
-    "strconv"
+	"encoding/csv"
+	"fmt"
+	"log"
+	"os"
+	"strconv"
 )
 
 func main() {
-    //inputPath := "./input_files/testmatrix.csv"
-    inputPath := "./input_files/matrix8.csv"
+    inputPath := "./input_files/matrixDistance.csv"
+    // inputPath := "./input_files/matrix8.csv"
 
     adjacencyMatrix := parseCsv(inputPath)
-    potencyMatrix := calcPotency(adjacencyMatrix)
-    secondPot := calcPotency(potencyMatrix)
+    potencyMatrix := calcPotency(adjacencyMatrix, adjacencyMatrix)
+    secondPot := calcPotency(potencyMatrix, adjacencyMatrix)
 
-    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v",
+    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v\n",
     adjacencyMatrix, potencyMatrix, secondPot)
-
-    // TODO: Maybe make function to multiply two matrices separately 
+    
     // TODO: Distanzmatrix
-    var distanceMatrix [][]int
-    for i := 0; i < len(adjacencyMatrix); i++ {
-        for j := 0; j < len(adjacencyMatrix); j++ {
-            if i == j {
-                distanceMatrix[i][j] = 0
-            } else if adjacencyMatrix[i][j] == 0 {
-                distanceMatrix[i][j] = -1
-            } else if adjacencyMatrix[i][j] == 1 {
-                distanceMatrix[i][j] = 1
-            } else {
-                
-            }
-        }
-    }
 
     // TODO: Wegematrix
 
@@ -43,6 +28,7 @@ func main() {
     // TODO: Durchmesser/Radius
 
     // TODO: Zentrumsknoten
+    fmt.Println()
 }
 
 func parseCsv(filePath string) [][]int {
@@ -71,19 +57,31 @@ func parseCsv(filePath string) [][]int {
     return data
 }
 
-func calcPotency(data [][]int) [][]int {
+func deepCopy(data [][]int) [][]int  {
+    matrixLen := len(data)
+    duplicate := make([][]int, matrixLen)
+    for i := range duplicate {
+        duplicate[i] = make([]int, matrixLen)
+        copy(duplicate[i], data[i])
+    }
+    return duplicate
+}
+
+func calcPotency(data [][]int, adjacencyMatrix [][]int) [][]int {
+    matrixLen := len(data)
+
     // Create matrix to write calculated data into
-    potencyMatrix := make([][]int, len(data))
+    potencyMatrix := make([][]int, matrixLen)
     for i := range potencyMatrix {
-        potencyMatrix[i] = make([]int, len(data))
+        potencyMatrix[i] = make([]int, matrixLen)
     }
 
     // Calculate potency matrix
-    for i := 0; i<len(data); i++  {
-        for j := 0; j<len(data); j++ {
+    for i := 0; i<matrixLen; i++  {
+        for j := 0; j<matrixLen; j++ {
             cellSum := 0
-            for k := 0; k<len(data); k++ {
-                cellSum += (data[i][k] * data[k][j])
+            for k := 0; k<matrixLen; k++ {
+                cellSum += (data[i][k] * adjacencyMatrix[k][j])
             }
             potencyMatrix[i][j] = cellSum
         }
