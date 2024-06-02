@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"strconv"
 )
 
@@ -15,11 +16,10 @@ func main() {
     adjacencyMatrix := parseCsv(inputPath)
     potencyMatrix := calcPotency(adjacencyMatrix, adjacencyMatrix)
     secondPot := calcPotency(potencyMatrix, adjacencyMatrix)
+    distanceMatrix := calcDistances(adjacencyMatrix)
 
-    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v\n",
-    adjacencyMatrix, potencyMatrix, secondPot)
-    
-    // TODO: Distanzmatrix
+    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v\n\nDistanzmatrix:\t%v",
+    adjacencyMatrix, potencyMatrix, secondPot, distanceMatrix)
 
     // TODO: Wegematrix
 
@@ -87,4 +87,42 @@ func calcPotency(data [][]int, adjacencyMatrix [][]int) [][]int {
         }
     }
     return potencyMatrix
+}
+
+func calcDistances(data [][]int) [][]int {
+    matrixLen := len(data)
+
+    // TODO: Distanzmatrix
+
+    distanceMatrix := deepCopy(data)
+
+    for i := 0; i < matrixLen; i++ {
+        for j := 0; j < matrixLen; j++ {
+            if i == j {
+                distanceMatrix[i][j] = 0
+            } else if data[i][j] == 0 {
+                distanceMatrix[i][j] = -99
+            }
+        }
+    }
+
+    potencyMatrix := data
+    oldDistance := distanceMatrix
+    for k := 2; k < matrixLen+2; k++ {
+        oldDistance = deepCopy(distanceMatrix)
+        potencyMatrix = calcPotency(potencyMatrix, data)
+        for i := 0; i < matrixLen; i++ {
+            for j := i; j < matrixLen; j++ {
+                if distanceMatrix[i][j] == -99 && potencyMatrix[i][j] > 0 {
+                    distanceMatrix[i][j] = k
+                    distanceMatrix[j][i] = k
+                }
+            }
+        }
+        if reflect.DeepEqual(oldDistance, distanceMatrix) {
+            break
+        }
+    }
+
+    return distanceMatrix
 }
