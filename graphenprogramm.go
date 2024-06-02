@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -16,23 +17,26 @@ func main() {
 
     adjacencyMatrix := parseCsv(inputPath)
     potencyMatrix := calcPotency(adjacencyMatrix, adjacencyMatrix)
-    secondPot := calcPotency(potencyMatrix, adjacencyMatrix)
     distanceMatrix := calcDistances(adjacencyMatrix)
 
-    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v\n\nDistanzmatrix:\t%v\n\n",
-    adjacencyMatrix, potencyMatrix, secondPot, distanceMatrix)
+    fmt.Println("Adjazenzmatrix: ")
+    prettyPrint(adjacencyMatrix)
 
+    fmt.Printf("Exzentrizitaeten: %v", calcExcentricities(adjacencyMatrix))
+
+    fmt.Println("\nPotenzmatrix: ")
+    prettyPrint(potencyMatrix)
+
+    fmt.Println("\nDistanzmatrix: ")
     prettyPrint(distanceMatrix)
 
-    // TODO: Wegematrix
-
-    // TODO: Exzentrizitaeten
 
     // TODO: Durchmesser/Radius
 
     // TODO: Zentrumsknoten
     fmt.Println()
 }
+
 
 func parseCsv(filePath string) [][]int {
     // Open the file
@@ -60,18 +64,26 @@ func parseCsv(filePath string) [][]int {
     return data
 }
 
+
 func prettyPrint(data [][]int) {
     matrixLen := len(data)
 
-    fmt.Printf("+%s+\n", strings.Repeat("-", matrixLen*2-1))
+    // Characters used to draw those boxes "─ │ ┬ ┴ ┐ ┤ ┘ ┌ ├ └"
+    fmt.Printf("\t┌%s┐\n", strings.Repeat("─", matrixLen*2-1))
     for i := 0; i < matrixLen; i++ {
+        fmt.Printf("\t│")
         for j := 0; j < matrixLen; j++ {
-            fmt.Printf("|%d", data[i][j])
+            if data[i][j] == -99 {
+                fmt.Print("∞│")
+            } else {
+                fmt.Printf("%d│", data[i][j])
+            }
         }
-        fmt.Printf("|\n")
+        fmt.Println()
     }
-    fmt.Printf("+%s+\n", strings.Repeat("-", matrixLen*2-1))
+    fmt.Printf("\t└%s┘\n", strings.Repeat("─", matrixLen*2-1))
 }
+
 
 func deepCopy(data [][]int) [][]int  {
     matrixLen := len(data)
@@ -82,6 +94,7 @@ func deepCopy(data [][]int) [][]int  {
     }
     return duplicate
 }
+
 
 func calcPotency(data [][]int, adjacencyMatrix [][]int) [][]int {
     matrixLen := len(data)
@@ -105,10 +118,9 @@ func calcPotency(data [][]int, adjacencyMatrix [][]int) [][]int {
     return potencyMatrix
 }
 
+
 func calcDistances(data [][]int) [][]int {
     matrixLen := len(data)
-
-    // TODO: Distanzmatrix
 
     distanceMatrix := deepCopy(data)
 
@@ -142,3 +154,19 @@ func calcDistances(data [][]int) [][]int {
 
     return distanceMatrix
 }
+
+
+func calcExcentricities(data [][]int) []int {
+    // TODO: Exzentrizitaeten
+    matrixLen := len(data)
+    
+    ex := make([]int, matrixLen)
+    for i := 0; i < matrixLen; i++ {
+        ex[i] = slices.Max(data[i])
+    }
+    return ex
+}
+
+// func calcPaths(data [][]int) [][]int {
+//     // TODO: Wegematrix
+// }
