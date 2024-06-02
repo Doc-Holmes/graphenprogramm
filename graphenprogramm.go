@@ -7,6 +7,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -18,8 +19,10 @@ func main() {
     secondPot := calcPotency(potencyMatrix, adjacencyMatrix)
     distanceMatrix := calcDistances(adjacencyMatrix)
 
-    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v\n\nDistanzmatrix:\t%v",
+    fmt.Printf("Adjazenzmatrix:\t%v\nPotenzmatrix:\t%v\n2. Potenz:\t%v\n\nDistanzmatrix:\t%v\n\n",
     adjacencyMatrix, potencyMatrix, secondPot, distanceMatrix)
+
+    prettyPrint(distanceMatrix)
 
     // TODO: Wegematrix
 
@@ -55,6 +58,19 @@ func parseCsv(filePath string) [][]int {
         data = append(data, row)
     }
     return data
+}
+
+func prettyPrint(data [][]int) {
+    matrixLen := len(data)
+
+    fmt.Printf("+%s+\n", strings.Repeat("-", matrixLen*2-1))
+    for i := 0; i < matrixLen; i++ {
+        for j := 0; j < matrixLen; j++ {
+            fmt.Printf("|%d", data[i][j])
+        }
+        fmt.Printf("|\n")
+    }
+    fmt.Printf("+%s+\n", strings.Repeat("-", matrixLen*2-1))
 }
 
 func deepCopy(data [][]int) [][]int  {
