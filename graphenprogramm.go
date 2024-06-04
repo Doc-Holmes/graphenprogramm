@@ -12,23 +12,27 @@ import (
 )
 
 func main() {
-    inputPath := "./input_files/matrixDistance.csv"
+    inputPath := "./input_files/matrixPath.csv"
     // inputPath := "./input_files/matrix8.csv"
 
     adjacencyMatrix := parseCsv(inputPath)
     potencyMatrix := calcPotency(adjacencyMatrix, adjacencyMatrix)
     distanceMatrix := calcDistances(adjacencyMatrix)
+    pathMatrix := calcPaths(adjacencyMatrix)
 
-    fmt.Println("Adjazenzmatrix: ")
+    fmt.Println("Adjazenzmatrix:")
     prettyPrint(adjacencyMatrix)
 
     fmt.Printf("Exzentrizitaeten: %v", calcExcentricities(adjacencyMatrix))
 
-    fmt.Println("\nPotenzmatrix: ")
+    fmt.Println("\nPotenzmatrix:")
     prettyPrint(potencyMatrix)
 
-    fmt.Println("\nDistanzmatrix: ")
+    fmt.Println("\nDistanzmatrix:")
     prettyPrint(distanceMatrix)
+
+    fmt.Println("\n\nWegmatrix:")
+    prettyPrint(pathMatrix)
 
 
     // TODO: Durchmesser/Radius
@@ -167,6 +171,27 @@ func calcExcentricities(data [][]int) []int {
     return ex
 }
 
-// func calcPaths(data [][]int) [][]int {
-//     // TODO: Wegematrix
-// }
+
+func calcPaths(data [][]int) [][]int {
+    // TODO: Wegematrix
+    matrixLen := len(data)
+    pathMatrix := deepCopy(data)
+    for i := 0; i < matrixLen; i++ {
+        pathMatrix[i][i] = 1
+    }
+
+    potencyMatrix := data
+    for k := 0; k < matrixLen; k++ {
+        potencyMatrix = calcPotency(potencyMatrix, data)
+        for i := 0; i < matrixLen; i++ {
+            for j := i; j < matrixLen; j++ {
+                if potencyMatrix[i][j] == 1 {
+                    pathMatrix[i][j] = 1
+                    pathMatrix[j][i] = 1
+                }
+            }
+        }
+    }
+
+    return pathMatrix
+}
