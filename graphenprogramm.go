@@ -12,13 +12,15 @@ import (
 )
 
 func main() {
-    inputPath := "./input_files/matrixPath.csv"
+    inputPath := "./input_files/matrix1.csv"
     // inputPath := "./input_files/matrix8.csv"
 
     adjacencyMatrix := parseCsv(inputPath)
     potencyMatrix := calcPotency(adjacencyMatrix, adjacencyMatrix)
     distanceMatrix := calcDistances(adjacencyMatrix)
     pathMatrix := calcPaths(adjacencyMatrix)
+    excent := calcExcentricities(adjacencyMatrix)
+    radDia := calcRadDia(excent)
 
     fmt.Println("Adjazenzmatrix:")
     prettyPrint(adjacencyMatrix)
@@ -29,13 +31,13 @@ func main() {
     fmt.Println("\nDistanzmatrix:")
     prettyPrint(distanceMatrix)
 
-    fmt.Printf("Exzentrizitäten: %v", calcExcentricities(adjacencyMatrix))
+    fmt.Printf("Exzentrizitäten: %v", excent)
 
     fmt.Println("\n\nWegmatrix:")
     prettyPrint(pathMatrix)
 
+    fmt.Printf("\nRadius:\t\t%d\nDurchmesser:\t%d", radDia[0], radDia[1])
 
-    // TODO: Durchmesser/Radius
 
     // TODO: Zentrumsknoten
     fmt.Println()
@@ -202,4 +204,9 @@ func calcPaths(data [][]int) [][]int {
     }
 
     return pathMatrix
+}
+
+func calcRadDia(data []int) []int {
+    // TODO: Durchmesser/Radius
+    return []int{slices.Min(data), slices.Max(data)}
 }
