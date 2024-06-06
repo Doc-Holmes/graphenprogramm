@@ -23,13 +23,13 @@ func main() {
     fmt.Println("Adjazenzmatrix:")
     prettyPrint(adjacencyMatrix)
 
-    fmt.Printf("Exzentrizitaeten: %v", calcExcentricities(adjacencyMatrix))
-
     fmt.Println("\nPotenzmatrix:")
     prettyPrint(potencyMatrix)
 
     fmt.Println("\nDistanzmatrix:")
     prettyPrint(distanceMatrix)
+
+    fmt.Printf("Exzentrizitäten: %v", calcExcentricities(adjacencyMatrix))
 
     fmt.Println("\n\nWegmatrix:")
     prettyPrint(pathMatrix)
@@ -162,18 +162,26 @@ func calcDistances(data [][]int) [][]int {
 
 func calcExcentricities(data [][]int) []int {
     // TODO: Exzentrizitaeten
+    // Generally done. Needs testing
     matrixLen := len(data)
-    
+    distanceMatrix := calcDistances(data)
     ex := make([]int, matrixLen)
+    
+    if slices.Min(distanceMatrix[0]) == -99 {
+        for i := 0; i < matrixLen; i++ {
+            ex[i] = -99
+        }
+        return ex
+    }
+
     for i := 0; i < matrixLen; i++ {
-        ex[i] = slices.Max(data[i])
+        ex[i] = slices.Max(distanceMatrix[i])
     }
     return ex
 }
 
 
 func calcPaths(data [][]int) [][]int {
-    // TODO: Wegematrix
     matrixLen := len(data)
     pathMatrix := deepCopy(data)
     for i := 0; i < matrixLen; i++ {
