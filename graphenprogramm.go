@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-    inputPath := "./input_files/matrix3.csv"
+    inputPath := "./input_files/matrix6.csv"
     // inputPath := "./input_files/matrix8.csv"
 
     adjacencyMatrix := parseCsv(inputPath)
@@ -41,7 +41,6 @@ func main() {
     fmt.Printf("\nZentrumsknoten:\t%v", center)
 
 
-    // TODO: Zentrumsknoten
     fmt.Println()
 }
 
@@ -208,9 +207,11 @@ func calcPaths(data [][]int) [][]int {
     return pathMatrix
 }
 
+
 func calcRadDia(data []int) []int {
     return []int{slices.Min(data), slices.Max(data)}
 }
+
 
 func calcCenter(data []int, rad int) []int {
     var center []int
