@@ -12,8 +12,10 @@ import (
 )
 
 func main() {
-    inputPath := "./input_files/matrix6.csv"
-    // inputPath := "./input_files/matrix8.csv"
+    inputPath := "./input_files/matrix1.csv"
+    if len(os.Args) > 1 {
+        inputPath = os.Args[1]
+    }
 
     adjacencyMatrix := parseCsv(inputPath)
     potencyMatrix := calcPotency(adjacencyMatrix, adjacencyMatrix)
@@ -32,14 +34,21 @@ func main() {
     fmt.Println("\nDistanzmatrix:")
     prettyPrint(distanceMatrix)
 
-    fmt.Printf("Exzentrizitäten: %v", excent)
-
     fmt.Println("\n\nWegmatrix:")
     prettyPrint(pathMatrix)
 
-    fmt.Printf("\nRadius:\t\t%d\nDurchmesser:\t%d", radDia[0], radDia[1])
-    fmt.Printf("\nZentrumsknoten:\t%v", center)
+    if radDia[0] == -99 {
+        fmt.Print("Exzentrizitäten: ∞")
+        fmt.Print("\nRadius:\t\t ∞\nDurchmesser:\t ∞")
+        fmt.Print("\nZentrumsknoten:\t ∞")
+    } else {
+        fmt.Printf("Exzentrizitäten: %v", excent)
+        fmt.Printf("\nRadius:\t\t %d\nDurchmesser:\t %d", radDia[0], radDia[1])
+        fmt.Printf("\nZentrumsknoten:\t %v", center)
+    }
 
+    fmt.Printf("\n\nKomponenten:\t%v", calcRawComponents(pathMatrix))
+    fmt.Printf("\nKanten:\t%v", calcEdges(adjacencyMatrix))
 
     fmt.Println()
 }
@@ -221,4 +230,34 @@ func calcCenter(data []int, rad int) []int {
         }
     }
     return center
+}
+
+
+func calcRawComponents(data [][]int) [][]int {
+    var comps [][]int
+    comps = append(comps, data[0])
+    for _, e := range data {
+        for j := 0; j < len(comps); j++ {
+            if !reflect.DeepEqual(comps[j], e) {
+                comps = append(comps, e)
+            }
+        }
+    }
+    return comps
+}
+
+
+func calcEdges(data [][]int) [][]int {
+    matrixLen := len(data)
+    var edges [][]int
+    for i := 0; i < matrixLen; i++ {
+        for j := i; j < matrixLen; j++ {
+            if data[i][j] == 1 {
+                edge := []int{i, j}
+                edges = append(edges, edge)
+            }
+        }
+        
+    }
+    return edges
 }
